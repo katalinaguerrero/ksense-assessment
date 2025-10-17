@@ -1,10 +1,9 @@
 export function calculateRiskScoring(patient) {
   return {
-    name: patient.name,
+    patientId: patient.patient_id,
     ageRisk: calculateAgeRisk(patient.age),
     bpRisk: calculateBloodPressureRisk(patient.blood_pressure),
     temperatureRisk: calculateTemperatureRisk(patient.temperature),
-    //TODO Add if it has valid data or not
   };
 
 }
