@@ -17,11 +17,22 @@ export async function apiRequest(endpoint, options = {}) {
   };
 
   const response = await fetch(url, config);
-  console.log(response);
 
   if (!response.ok) {
     throw new Error(`Error ${response.status}: ${response.statusText}`);
   }
 
   return response.json();
+}
+
+export async function fetchWithRetry(fetchFn, args = [], retries = 3, delay = 1000) {
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      return await fetchFn(...args)
+    } catch (err) {
+      console.warn(`Tried ${attempt} failed: ${err.message}`)
+      if (attempt === retries) throw err
+      await new Promise(res => setTimeout(res, delay))
+    }
+  }
 }

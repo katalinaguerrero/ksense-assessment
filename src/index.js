@@ -14,15 +14,15 @@ import { calculateRiskScoring } from './logic/riskScoringCalculator.js';
     let hasNext = true
 
     while (hasNext) {
-      const { data: patients, pagination: { hasNext: next } } = await getPatientsByPagination(page, pageSize)
+      const { data: patients, pagination } = await getPatientsByPagination(page, pageSize);
 
+      console.log('page number ' + page);
       if (patients?.length) {
-
-        console.log(patients)
         processPatients(patients, results)
       }
 
-      hasNext = next
+      hasNext = pagination?.hasNext ?? (patients.length === pageSize);
+
       page++
     }
     console.log('Resultados finales:', results)
