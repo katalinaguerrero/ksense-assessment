@@ -1,4 +1,5 @@
 import { getPatientsByPagination } from './api/patients.js';
+import { submitAssessment } from './api/client.js';
 import { calculateRiskScoring } from './logic/riskScoringCalculator.js';
 
 (async () => {
@@ -12,12 +13,13 @@ import { calculateRiskScoring } from './logic/riskScoringCalculator.js';
     let page = 1
     const pageSize = 20
     let hasNext = true
+    let patientsWereProcessed = false
 
     while (hasNext) {
       const { data: patients, pagination } = await getPatientsByPagination(page, pageSize);
 
-      console.log('page number ' + page);
       if (patients?.length) {
+        patientsWereProcessed = true
         processPatients(patients, results)
       }
 
@@ -25,7 +27,9 @@ import { calculateRiskScoring } from './logic/riskScoringCalculator.js';
 
       page++
     }
-    console.log('Resultados finales:', results)
+    if (patientsWereProcessed) {
+      submitAssessment(results)
+    }
   } catch (err) {
     console.error('Error fetching patients:', err.message)
   }

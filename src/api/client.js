@@ -36,3 +36,30 @@ export async function fetchWithRetry(fetchFn, args = [], retries = 3, delay = 10
     }
   }
 }
+
+export async function submitAssessment(results) {
+
+  try {
+    const endpoint = '/submit-assessment'
+    const url = `${BASE_URL}${endpoint}`;
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': API_KEY
+      },
+      body: JSON.stringify(results)
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error in the request: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log('Assessment Results: ', data);
+    return data;
+  } catch (error) {
+    console.error('Error sending results: ', error);
+    throw error;
+  }
+}
